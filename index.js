@@ -14,7 +14,7 @@ const loadAllPhones = async(status, searchText) => {
     const responce = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText ? searchText : 'iphone'}`)
     const data = await responce.json();
     
-console.log(data);
+    // console.log(data);
 
    if(status === true){
     displayAllPhones(data.data);
@@ -28,7 +28,11 @@ console.log(data);
 // 3rd step
 const displayAllPhones = (phones) => {
     // console.log(phones);
+
     const phoneContainer = document.getElementById('phones-container')
+
+    phoneContainer.innerHTML = ""
+
 
     // forEach kono kisu return kore na tai akhane forEach loop chalabo
     phones.forEach(phone => {
@@ -54,7 +58,7 @@ const displayAllPhones = (phones) => {
                 <h2 class="card-title">${brand}</h2>
                 <p>${slug}</p>
                 <div class="card-actions">
-                    <button onclick="phoneDetails()" class="btn btn-primary">Show Details</button>
+                    <button onclick="phoneDetails('${slug}')" class="btn btn-primary">Show Details</button>
                 </div>
             </div>
         </div>
@@ -76,6 +80,11 @@ const handleShowAll = () => {
 
 // 1st step // eikhane data ta 3 sec ghure uporer 2nd step ke call korbe
 const handleSearch = () => {
+
+    const phoneContainer = document.getElementById('phones-container')
+
+    phoneContainer.innerHTML = ""
+
     const searchText = document.getElementById('search-box').value
     document.getElementById('spinner').style.display = 'block';
     setTimeout(function(){
@@ -84,15 +93,42 @@ const handleSearch = () => {
 }
 
 
+// 5th step
+const phoneDetails = async(slugs) => {
+    
+    const response = await fetch(`https://openapi.programming-hero.com/api/phone/${slugs}`)
+    const data = await response.json()
+    console.log(data.data);
+
+    // object destrucring
+    const {brand, image, slug} = data.data;
+    
+    const modalContainer = document.getElementById('modal-container')
+
+    modalContainer.innerHTML = `
+
+    <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold">${brand}</h3>
+          <p class="py-4">Press ESC key or click the button below to close</p>
+          <div class="modal-action">
+            <form method="dialog">
+              <!-- if there is a button in form, it will close the modal -->
+              <button class="btn">Close</button>
+            </form>
+          </div>
+        </div>
+    </dialog>
+    
+    `
+    my_modal_5.showModal()
+}
+
+
+
 
 loadAllPhones(false, 'iphone');
 
-
-const phoneDetails = async(slug) => {
-    console.log(slug);
-    
-    // const response = await fetch('https://openapi.programming-hero.com/api/phone/${id}')
-}
 
 
 
